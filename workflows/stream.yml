@@ -1,0 +1,27 @@
+name: Generate M3U8 Stream
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '*/30 * * * *' # Перезапуск каждые 30 минут (опционально)
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install FFmpeg
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg
+
+      - name: Run Stream Script
+        run: python stream.py
+
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: hls # Папка, которую грузим
+          branch: gh-pages # Ветка для ссылки
